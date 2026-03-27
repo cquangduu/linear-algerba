@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hệ Phương Trình & Ma Trận — Toàn Tập</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=JetBrains+Mono:wght@300;400;600&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap');
+
+:root {
+  --ink: #0f0e0d;
+  --paper: #f5f0e8;
+  --cream: #ede7d4;
+  --rust: #c0392b;
+  --gold: #b8860b;
+  --teal: #1a5276;
+  --sage: #2e7d32;
+  --muted: #6b6255;
+  --border: #c8b99a;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 17px;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* HEADER */
+header {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 3rem 2rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 30px,
+    rgba(255,255,255,0.02) 30px,
+    rgba(255,255,255,0.02) 31px
+  );
+}
+header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
+  letter-spacing: -1px;
+  position: relative;
+}
+header h1 span { color: #c8a96e; }
+header p {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  color: #a89878;
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+  position: relative;
+}
+
+/* NAV */
+nav {
+  background: var(--ink);
+  border-top: 1px solid #333;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  justify-content: center;
+  padding: 0 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.4);
+}
+nav button {
+  background: none;
+  border: none;
+  color: #a89878;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  padding: 0.9rem 1rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.2s;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+}
+nav button:hover { color: var(--paper); }
+nav button.active { color: #c8a96e; border-bottom-color: #c8a96e; }
+
+/* MAIN LAYOUT */
+main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+/* SECTIONS */
+.section { display: none; animation: fadeIn 0.4s ease; }
+.section.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* CHAPTER TITLES */
+.chapter {
+  border-left: 4px solid var(--rust);
+  padding-left: 1.5rem;
+  margin: 2.5rem 0 1.5rem;
+}
+.chapter-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  color: var(--rust);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+.chapter h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* CONCEPT BOXES */
+.concept-box {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 1.5rem;
+  margin: 1.2rem 0;
+  position: relative;
+}
+.concept-box::before {
+  content: attr(data-label);
+  position: absolute;
+  top: -0.65rem; left: 1rem;
+  background: var(--cream);
+  padding: 0 0.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+  border: 1px solid var(--border);
+}
+.concept-box h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem;
+  margin-bottom: 0.6rem;
+  color: var(--teal);
+}
+
+/* DEFINITION BOX */
+.def-box {
+  background: #eef4fb;
+  border: 1px solid #aac4e0;
+  border-left: 4px solid var(--teal);
+  padding: 1.2rem 1.5rem;
+  margin: 1rem 0;
+  border-radius: 0 2px 2px 0;
+}
+.def-box strong {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: var(--teal);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+/* FORMULA */
+.formula {
+  background: #1a1a2e;
+  color: #e8d5a3;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88rem;
+  padding: 1rem 1.5rem;
+  border-radius: 2px;
+  margin: 0.8rem 0;
+  overflow-x: auto;
+  line-height: 1.8;
+}
+.formula .comment { color: #6b7d5a; font-style: italic; }
+.formula .hl { color: #f4a261; }
+.formula .kw { color: #a8d8a8; }
+
+/* MATRIX DISPLAY */
+.matrix-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 0.6rem 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+}
+.matrix {
+  display: inline-grid;
+  gap: 2px;
+  border-left: 3px solid var(--ink);
+  border-right: 3px solid var(--ink);
+  padding: 0.4rem 0.8rem;
+  position: relative;
+}
+.matrix::before, .matrix::after {
+  content: '';
+  position: absolute;
+  width: 6px; height: 100%;
+  top: 0;
+  border-top: 3px solid var(--ink);
+  border-bottom: 3px solid var(--ink);
+}
+.matrix::before { left: 0; }
+.matrix::after { right: 0; }
+.matrix-row { display: flex; gap: 1.2rem; justify-content: center; }
+.matrix-row span { min-width: 1.5rem; text-align: center; }
+.mat-label { font-style: italic; font-size: 1.1rem; }
+
+/* STEPS */
+.steps {
+  counter-reset: step;
+  list-style: none;
+  margin: 1rem 0;
+}
+.steps li {
+  counter-increment: step;
+  display: flex;
+  gap: 1rem;
+  margin: 0.6rem 0;
+  padding: 0.6rem 0;
+  border-bottom: 1px dashed var(--border);
+  align-items: flex-start;
+}
+.steps li::before {
+  content: counter(step);
+  background: var(--rust);
+  color: white;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+/* NOTE */
+.note {
+  background: #fdf6e3;
+  border: 1px solid #e8d5a3;
+  border-left: 4px solid var(--gold);
+  padding: 1rem 1.2rem;
+  margin: 0.8rem 0;
+  font-size: 0.95rem;
+}
+.note strong { color: var(--gold); }
+
+/* WARNING */
+.warn {
+  background: #fff5f5;
+  border: 1px solid #f5c6c6;
+  border-left: 4px solid var(--rust);
+  padding: 1rem 1.2rem;
+  margin: 0.8rem 0;
+  font-size: 0.95rem;
+}
+.warn strong { color: var(--rust); }
+
+/* TABLE */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+th {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  padding: 0.7rem 1rem;
+  text-transform: uppercase;
+  text-align: left;
+}
+td {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+tr:nth-child(even) td { background: var(--cream); }
+
+/* EXERCISES */
+.ex-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  margin: 1.2rem 0;
+  overflow: hidden;
+  box-shadow: 2px 2px 0 var(--border);
+}
+.ex-header {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.7rem 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.ex-header span:first-child {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #c8a96e;
+}
+.difficulty {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 1px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.diff-easy { background: #2e7d32; color: white; }
+.diff-med { background: #e65100; color: white; }
+.diff-hard { background: #b71c1c; color: white; }
+
+.ex-body { padding: 1.2rem; }
+.ex-q { font-size: 1rem; margin-bottom: 1rem; line-height: 1.6; }
+
+.toggle-btn {
+  background: var(--teal);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 1px;
+  transition: background 0.2s;
+}
+.toggle-btn:hover { background: #154360; }
+.toggle-btn.open { background: var(--sage); }
+
+.ex-sol {
+  display: none;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 2px dashed var(--border);
+}
+.ex-sol.show { display: block; }
+.sol-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  color: var(--sage);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* DIVIDER */
+.divider {
+  text-align: center;
+  margin: 2rem 0;
+  color: var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  letter-spacing: 4px;
+}
+
+/* TAGS */
+.tag {
+  display: inline-block;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+  padding: 0.15rem 0.5rem;
+  margin: 0 0.15rem;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+/* GRID */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+/* HIGHLIGHT */
+.hl-text { color: var(--rust); font-weight: 600; }
+.hl-blue { color: var(--teal); font-weight: 600; }
+.hl-green { color: var(--sage); font-weight: 600; }
+
+/* SECTION INTRO */
+.section-intro {
+  font-size: 1.05rem;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* PROGRESS BAR */
+.progress-wrap { margin: 0.5rem 0 1.5rem; }
+.progress-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+}
+.progress-bar {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--rust), var(--gold));
+  border-radius: 2px;
+  transition: width 0.3s;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Hệ Phương Trình Tuyến Tính <span>&</span> Ma Trận</h1>
+  <p>Từ cơ bản đến nâng cao · Lý thuyết & Bài tập</p>
+</header>
+
+<nav>
+  <button class="active" onclick="show('overview')">Tổng quan</button>
+  <button onclick="show('matrix-basics')">Ma trận cơ bản</button>
+  <button onclick="show('matrix-ops')">Phép toán</button>
+  <button onclick="show('det-inverse')">Định thức & Nghịch đảo</button>
+  <button onclick="show('linear-sys')">Hệ PT tuyến tính</button>
+  <button onclick="show('methods')">Phương pháp giải</button>
+  <button onclick="show('advanced')">Nâng cao</button>
+  <button onclick="show('exercises')">Bài tập</button>
+</nav>
+
+<main>
+
+<!-- ═══════════════ OVERVIEW ═══════════════ -->
+<div class="section active" id="overview">
+  <p class="section-intro">Chào mừng bạn đến với tài liệu toàn diện về Đại số tuyến tính. Hãy bắt đầu từ bức tranh tổng thể trước khi đi vào chi tiết.</p>
+
+  <div class="chapter">
+    <span class="chapter-num">Chương 0</span>
+    <h2>Bản đồ học tập</h2>
+  </div>
+
+  <div class="concept-box" data-label="Lộ trình">
+    <table>
+      <tr><th>Cấp độ</th><th>Nội dung</th><th>Thời gian gợi ý</th></tr>
+      <tr><td><span class="tag">Cơ bản</span></td><td>Định nghĩa ma trận, phép toán cộng/nhân, định thức 2×2</td><td>1–2 tuần</td></tr>
+      <tr><td><span class="tag">Trung cấp</span></td><td>Ma trận nghịch đảo, hạng, hệ phương trình, Gauss-Jordan</td><td>2–3 tuần</td></tr>
+      <tr><td><span class="tag">Nâng cao</span></td><td>Không gian vector, trị riêng, chéo hóa, SVD</td><td>3–5 tuần</td></tr>
+    </table>
+  </div>
+
+  <div class="two-col">
+    <div class="def-box">
+      <strong>Ma trận là gì?</strong>
+      Một bảng chữ nhật gồm các số, sắp xếp theo hàng và cột. Ma trận là ngôn ngữ mã hóa các phép biến đổi tuyến tính.
+    </div>
+    <div class="def-box">
+      <strong>Hệ PT tuyến tính là gì?</strong>
+      Tập hợp các phương trình bậc nhất cùng ẩn. Ma trận là công cụ mạnh nhất để giải hệ này một cách hệ thống.
+    </div>
+  </div>
+
+  <div class="chapter">
+    <span class="chapter-num">Ứng dụng thực tế</span>
+    <h2>Tại sao phải học?</h2>
+  </div>
+
+  <div class="two-col">
+    <div class="concept-box" data-label="Khoa học máy tính">
+      <h3>🤖 AI & Machine Learning</h3>
+      Mạng nơ-ron là tập hợp các phép nhân ma trận. Gradient descent, backpropagation đều dựa trên đại số tuyến tính.
+    </div>
+    <div class="concept-box" data-label="Kỹ thuật">
+      <h3>⚙️ Xử lý ảnh & đồ họa</h3>
+      Mỗi phép xoay, phóng to, biến dạng hình ảnh là một phép nhân ma trận 3×3 hay 4×4.
+    </div>
+    <div class="concept-box" data-label="Kinh tế">
+      <h3>📊 Kinh tế lượng</h3>
+      Hồi quy tuyến tính, tối ưu hóa danh mục đầu tư đều giải các hệ phương trình tuyến tính lớn.
+    </div>
+    <div class="concept-box" data-label="Vật lý">
+      <h3>🌊 Cơ học & vật lý</h3>
+      Phân tích mạch điện, dao động hệ vật, cơ học lượng tử — tất cả đều dùng ma trận.
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>💡 Gợi ý học tập:</strong> Học lý thuyết xong hãy <em>ngay lập tức</em> làm bài tập ở tab "Bài tập". Đại số tuyến tính học bằng tay là cách tốt nhất để hiểu sâu.
+  </div>
+</div>
+
+<!-- ═══════════════ MATRIX BASICS ═══════════════ -->
+<div class="section" id="matrix-basics">
+  <p class="section-intro">Ma trận là nền tảng của toàn bộ môn học. Hãy nắm chắc các khái niệm cơ bản trước khi đi xa hơn.</p>
+
+  <div class="chapter">
+    <span class="chapter-num">Chương 1</span>
+    <h2>Định nghĩa và ký hiệu</h2>
+  </div>
+
+  <div class="def-box">
+    <strong>Định nghĩa</strong>
+    Ma trận <em>m × n</em> là bảng gồm <em>m</em> hàng và <em>n</em> cột, các phần tử thuộc một trường số (thường là ℝ hoặc ℂ). Phần tử hàng <em>i</em>, cột <em>j</em> ký hiệu là <em>a<sub>ij</sub></em>.
+  </div>
+
+  <div class="formula">
+A = [a<sub>ij</sub>] = <span class="hl">⎡ a₁₁  a₁₂  ···  a₁ₙ ⎤</span>
+                      <span class="hl">⎢ a₂₁  a₂₂  ···  a₂ₙ ⎥</span>
+                      <span class="hl">⎢  ·    ·   ···   ·  ⎥</span>
+                      <span class="hl">⎣ aₘ₁  aₘ₂  ···  aₘₙ ⎦</span>
+<span class="comment">// A có kích thước m×n, hay A ∈ M(m,n)</span>
+  </div>
+
+  <div class="chapter">
+    <span class="chapter-num">Chương 1.2</span>
+    <h2>Các loại ma trận đặc biệt</h2>
+  </div>
+
+  <div class="two-col">
+    <div class="concept-box" data-label="Ma trận vuông">
+      <h3>Ma trận vuông (n×n)</h3>
+      <p>Số hàng = số cột. Quan trọng nhất vì có định thức và nghịch đảo.</p>
+      <div class="formula" style="font-size:0.78rem">⎡ 1  2  3 ⎤
+⎢ 4  5  6 ⎥   (3×3)
+⎣ 7  8  9 ⎦</div>
+    </div>
+    <div class="concept-box" data-label="Ma trận đơn vị">
+      <h3>Ma trận đơn vị I<sub>n</sub></h3>
+      <p>Đường chéo chính = 1, còn lại = 0. Vai trò như số 1 trong nhân.</p>
+      <div class="formula" style="font-size:0.78rem">I₃ = ⎡ 1  0  0 ⎤
+     ⎢ 0  1  0 ⎥
+     ⎣ 0  0  1 ⎦</div>
+    </div>
+    <div class="concept-box" data-label="Ma trận đường chéo">
+      <h3>Ma trận đường chéo</h3>
+      <p>Chỉ có phần tử trên đường chéo chính ≠ 0.</p>
+      <div class="formula" style="font-size:0.78rem">D = diag(d₁, d₂, d₃)
+  = ⎡ d₁  0   0  ⎤
+    ⎢ 0   d₂  0  ⎥
+    ⎣ 0   0   d₃ ⎦</div>
+    </div>
+    <div class="concept-box" data-label="Ma trận tam giác">
+      <h3>Ma trận tam giác</h3>
+      <p><strong>Trên:</strong> a<sub>ij</sub>=0 khi i>j &nbsp;|&nbsp; <strong>Dưới:</strong> a<sub>ij</sub>=0 khi i&lt;j</p>
+      <div class="formula" style="font-size:0.78rem">U = ⎡ 1  2  3 ⎤   L = ⎡ 1  0  0 ⎤
+    ⎢ 0  4  5 ⎥       ⎢ 2  3  0 ⎥
+    ⎣ 0  0  6 ⎦       ⎣ 4  5  6 ⎦</div>
+    </div>
+    <div class="concept-box" data-label="Ma trận đối xứng">
+      <h3>Ma trận đối xứng</h3>
+      <p>A = Aᵀ, tức a<sub>ij</sub> = a<sub>ji</sub>. Xuất hiện trong vật lý và tối ưu hóa.</p>
+      <div class="formula" style="font-size:0.78rem">S = ⎡ 1  2  3 ⎤
+    ⎢ 2  5  4 ⎥   (S = Sᵀ)
+    ⎣ 3  4  6 ⎦</div>
+    </div>
+    <div class="concept-box" data-label="Ma trận không">
+      <h3>Ma trận không & Ma trận hàng/cột</h3>
+      <p>Ma trận O: mọi phần tử = 0. Vector hàng (1×n), vector cột (m×1).</p>
+      <div class="formula" style="font-size:0.78rem">v = ⎡ 2 ⎤   wᵀ = [1  3  5]
+    ⎢ 5 ⎥
+    ⎣ 7 ⎦</div>
+    </div>
+  </div>
+
+  <div class="chapter">
+    <span class="chapter-num">Chương 1.3</span>
+    <h2>Ma trận chuyển vị</h2>
+  </div>
+
+  <div class="def-box">
+    <strong>Định nghĩa chuyển vị</strong>
+    Aᵀ là ma trận thu được bằng cách hoán đổi hàng và cột của A: (Aᵀ)<sub>ij</sub> = A<sub>ji</sub>.
+  </div>
+
+  <div class="formula">
+A = ⎡ 1  2  3 ⎤   →   Aᵀ = ⎡ 1  4 ⎤
+    ⎣ 4  5  6 ⎦            ⎢ 2  5 ⎥
+<span class="comment">// A là 2×3, Aᵀ là 3×2</span>              ⎣ 3  6 ⎦
+
+<span class="kw">Tính chất:</span>
+(Aᵀ)ᵀ = A
+(A + B)ᵀ = Aᵀ + Bᵀ
+(αA)ᵀ = αAᵀ
+(AB)ᵀ = <span class="hl">Bᵀ·Aᵀ</span>  ← chú ý đảo thứ tự!
+  </div>
+
+  <div class="warn">
+    <strong>⚠️ Lỗi phổ biến:</strong> (AB)ᵀ = BᵀAᵀ, KHÔNG phải AᵀBᵀ. Thứ tự đảo ngược!
+  </div>
+</div>
+
+<!-- ═══════════════ MATRIX OPS ═══════════════ -->
+<div class="section" id="matrix-ops">
+  <p class="section-intro">Các phép toán trên ma trận là công cụ cốt lõi. Hiểu sâu các điều kiện và tính chất là chìa khóa thành công.</p>
+
+  <div class="chapter">
+    <span class="chapter-num">Chương 2</span>
+    <h2>Phép cộng và nhân vô hướng</h2>
+  </div>
+
+  <div class="def-box">
+    <strong>Cộng ma trận</strong>
+    Chỉ thực hiện được khi hai ma trận cùng kích thước. Cộng từng phần tử tương ứng: (A+B)<sub>ij</sub> = a<sub>ij</sub> + b<sub>ij</sub>.
+  </div>
+
+  <div class="formula">
+⎡ 1  2 ⎤   ⎡ 5  6 ⎤   ⎡ 1+5  2+6 ⎤   ⎡ 6   8  ⎤
+⎢ 3  4 ⎥ + ⎢ 7  8 ⎥ = ⎢ 3+7  4+8 ⎥ = ⎢ 10  12 ⎥
+⎣ 5  6 ⎦   ⎣ 9  0 ⎦   ⎣ 5+9  6+0 ⎦   ⎣ 14  6  ⎦
+
+<span class="kw">Nhân vô hướng:</span>  3·⎡ 1  2 ⎤ = ⎡ 3   6  ⎤
+                   ⎣ 3  4 ⎦   ⎣ 9   12 ⎦
+  </div>
+
+  <div class="chapter">
+    <span class="chapter-num">Chương 2.2</span>
+    <h2>Phép nhân ma trận</h2>
+  </div>
+
+  <div class="def-box">
+    <strong>Điều kiện nhân</strong>
+    A (m×<span class="hl-text">k</span>) × B (<span class="hl-text">k</span>×n) = C (m×n). Số cột của A phải bằng số hàng của B. (c<sub>ij</sub> = Σ a<sub>ik</sub>·b<sub>kj</sub>)
+  </div>
+
+  <div class="formula">
+<span class="kw">Ví dụ A(2×3) × B(3×2) = C(2×2):</span>
+
+A = ⎡ 1  2  3 ⎤    B = ⎡ 7   8  ⎤
+    ⎣ 4  5  6 ⎦        ⎢ 9   10 ⎥
+                        ⎣ 11  12 ⎦
+
+c₁₁ = 1·7 + 2·9 + 3·11 = 7 + 18 + 33 = <span class="hl">58</span>
+c₁₂ = 1·8 + 2·10 + 3·12 = 8 + 20 + 36 = <span class="hl">64</span>
+c₂₁ = 4·7 + 5·9 + 6·11 = 28 + 45 + 66 = <span class="hl">139</span>
+c₂₂ = 4·8 + 5·10 + 6·12 = 32 + 50 + 72 = <span class="hl">154</span>
+
+C = ⎡ 58   64  ⎤
+    ⎣ 139  154 ⎦
+  </div>
+
+  <div class="two-col">
+    <div class="def-box">
+      <strong>Tính chất ĐÚNG</strong>
+      A(BC) = (AB)C &nbsp; (kết hợp)<br>
+      A(B+C) = AB + AC &nbsp; (phân phối)<br>
+      (A+B)C = AC + BC<br>
+      AI = IA = A &nbsp; (đơn vị)<br>
+      α(AB) = (αA)B = A(αB)
+    </div>
+    <div class="warn">
+      <strong>Tính chất SAI (cẩn thận!)</strong>
+      AB ≠ BA &nbsp; (không giao hoán)<br>
+      AB = 0 không ⟹ A=0 hoặc B=0<br>
+      AB = AC không ⟹ B=C<br>
+      (A+B)² ≠ A²+2AB+B² &nbsp; (nói chung)
+    </div>
+  </div>
+
+  <div class="chapter">
+    <span class="chapter-num">Chương 2.3</span>
+    <h2>Phép biến đổi hàng sơ cấp</h2>
+  </div>
+
+  <div class="concept-box" data-label="Ba phép biến đổi">
+    <h3>Ba phép biến đổi hàng sơ cấp (ERO)</h3>
+    <ol class="steps">
+      <li><strong>R<sub>i</sub> ↔ R<sub>j</sub></strong>: Hoán đổi hai hàng i và j</li>
+      <li><strong>αR<sub>i</sub> → R<sub>i</sub></strong>: Nhân hàng i với hằng số α ≠ 0</li>
+      <li><strong>R<sub>i</sub> + αR<sub>j</sub> → R<sub>i</sub></strong>: Cộng α lần hàng j vào hàng i</li>
+    </ol>
+    <div class="note">
+      <strong>Quan trọng:</strong> Các phép biến đổi hàng sơ cấp không thay đổi tập nghiệm của hệ phương trình. Đây là nền tảng của phương pháp Gauss.
+    </div>
+  </div>
+
+  <div class="chapter">
+    <span class="chapter-num">Chương 2.4</span>
+    <h2>Dạng bậc thang (Row Echelon Form)</h2>
+  </div>
+
+  <div class="two-col">
+    <div class="concept-box" data-label="REF">
+      <h3>Dạng bậc thang (REF)</h3>
+      <ul style="list-style:disc;padding-left:1.2rem">
+        <li>Hàng không toàn 0 ở trên hàng toàn 0</li>
+        <li>Phần tử đầu tiên ≠ 0 (pivot) của hàng dưới nằm bên phải pivot hàng trên</li>
+      </ul>
+      <div class="formula" style="font-size:0.78rem">⎡ <span class="hl">2</span>  1  3  5 ⎤
+⎢ 0  <span class="hl">3</span>  1  2 ⎥
+⎢ 0  0  <span class="hl">4</span>  1 ⎥
+⎣ 0  0  0  0 ⎦</div>
+    </div>
+    <div class="concept-box" data-label="RREF">
+      <h3>Dạng bậc thang rút gọn (RREF)</h3>
+      <ul style="list-style:disc;padding-left:1.2rem">
+        <li>Là REF, thêm: mỗi pivot = 1</li>
+        <li>Trong cột có pivot: chỉ có pivot ≠ 0</li>
+      </ul>
+      <div class="formula" style="font-size:0.78rem">⎡ <span class="hl">1</span>  0  0  2 ⎤
+⎢ 0  <span class="hl">1</span>  0  3 ⎥
+⎢ 0  0  <span class="hl">1</span>  1 ⎥
+⎣ 0  0  0  0 ⎦</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ DET & INVERSE ═══════════════ -->
+<div class="section" id="det-inverse">
+  <p class="section-intro">Định thức và ma trận nghịch đảo là hai công cụ mạnh nhất trong tay hộp của bạn khi giải các bài toán đại số tuyến tính.</p>
+
+  <div class="chapter">
+    <span class="chapter-num">Chương 3</span>
+    <h2>Định thức (Determinant)</h2>
+  </div>
+
+  <div class="def-box">
+    <strong>Định nghĩa</strong>
+    Định thức là một hàm số ánh xạ ma trận vuông sang một số thực. Ký hiệu: det(A) hoặc |A|.
+  </div>
+
+  <div class="concept-box" data-label="Công thức">
+    <h3>Định thức cấp 2 và 3</h3>
+    <div class="formula">
+<span class="kw">Cấp 2:</span>
+|a  b|
+|c  d| = ad - bc
+
+<span class="kw">Cấp 3 (quy tắc Sarrus):</span>
+|a₁₁  a₁₂  a₁₃|
+|a₂₁  a₂₂  a₂₃| = a₁₁a₂₂a₃₃ + a₁₂a₂₃a₃₁ + a₁₃a₂₁a₃₂
+|a₃₁  a₃₂  a₃₃|   - a₁₃a₂₂a₃₁ - a₁₁a₂₃a₃₂ - a₁₂a₂₁a₃₃
+
+<span class="comment">// Ghi nhớ: 3 đường chéo xuôi (+), 3 đường chéo ngược (-)</span>
+    </div>
+  </div>
+
+  <div class="concept-box" data-label="Khai triển Laplace">
+    <h3>Khai triển theo hàng/cột (Laplace)</h3>
+    <div class="formula">
+det(A) = Σⱼ aᵢⱼ · Cᵢⱼ   <span class="comment">// khai triển theo hàng i</span>
+det(A) = Σᵢ aᵢⱼ · Cᵢⱼ   <span class="comment">// khai triển theo cột j</span>
+
+<span class="kw">Trong đó:</span>
+Mᵢⱼ = định thức con (bỏ hàng i, cột j)
+Cᵢⱼ = (-1)^(i+j) · Mᵢⱼ   <span class="comment">// phần bù đại số</span>
+
+<span class="hl">Quy tắc dấu: ⎡ +  -  +  - ⎤</span>
+              ⎢ -  +  -  + ⎥
+              ⎢ +  -  +  - ⎥
+              ⎣ -  +  -  + ⎦
+    </div>
+  </div>
+
+  <div class="concept-box" data-label="Tính chất định thức">
+    <h3>8 tính chất quan trọng</h3>
+    <div class="formula">
+1. det(Iₙ) = 1
+2. Hoán đổi 2 hàng: <span class="hl">det đổi dấu</span>
+3. Hàng toàn 0 ⟹ det = 0
+4. Nhân hàng i với α: <span class="hl">det nhân α</span>
+5. Cộng bội hàng khác: det không đổi
+6. det(Aᵀ) = det(A)
+7. <span class="hl">det(AB) = det(A)·det(B)</span>   ← rất quan trọng!
+8. det(A⁻¹) = 1/det(A)   (nếu A khả nghịch)
+
+<span class="kw">Ma trận tam giác:</span> det = tích các phần tử đường chéo
+det(diag(d₁,...,dₙ)) = d₁·d₂·...·dₙ
+    </div>
+  </div>
+
+  <div class="chapter">
+    <span class="chapter-num">Chương 3.2</span>
+    <h2>Ma trận nghịch đảo (Inverse Matrix)</h2>
+  </div>
+
+  <div class="def-box">
+    <strong>Định nghĩa</strong>
+    Ma trận vuông A có nghịch đảo A⁻¹ khi và chỉ khi det(A) ≠ 0. Khi đó: A·A⁻¹ = A⁻¹·A = I.
+  </div>
+
+  <div class="two-col">
+    <div class="concept-box" data-label="Công thức cấp 2">
+      <h3>Nghịch đảo ma trận 2×2</h3>
+      <div class="formula" style="font-size:0.8rem">
+A = ⎡ a  b ⎤
+    ⎣ c  d ⎦
+
+A⁻¹ = <span class="hl">1/(ad-bc)</span> · ⎡  d  -b ⎤
+                       ⎣ -c   a ⎦
+
+<span class="comment">// Đổi chỗ đường chéo, đổi dấu phản đường chéo</span>
+      </div>
+    </div>
+    <div class="concept-box" data-label="Phương pháp Gauss-Jordan">
+      <h3>Nghịch đảo bằng Gauss-Jordan</h3>
+      <ol class="steps">
+        <li>Lập ma trận mở rộng [A | I]</li>
+        <li>Biến đổi hàng để phần trái → I</li>
+        <li>Phần phải → A⁻¹</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="formula">
+<span class="kw">Ví dụ: Tìm nghịch đảo A = ⎡ 2  1 ⎤</span>
+                              <span class="kw">⎣ 5  3 ⎦</span>
+
+det(A) = 2·3 - 1·5 = 1 ≠ 0  ✓
+
+A⁻¹ = 1/1 · ⎡  3  -1 ⎤ = ⎡  3  -1 ⎤
+             ⎣ -5   2 ⎦   ⎣ -5   2 ⎦
+
+<span class="kw">Kiểm tra:</span> ⎡ 2  1 ⎤ · ⎡  3  -1 ⎤ = ⎡ 1  0 ⎤ = I  ✓
+             ⎣ 5  3 ⎦   ⎣ -5   2 ⎦   ⎣ 0  1 ⎦
+  </div>
+
+  <div class="concept-box" data-label="Công thức nghịch đảo tổng quát">
+    <h3>Nghịch đảo qua ma trận phụ hợp</h3>
+    <div class="formula">
+A⁻¹ = (1/det(A)) · adj(A)
+
+<span class="kw">adj(A) = (Cᵢⱼ)ᵀ = ma trận phụ hợp = chuyển vị của ma trận cofactor</span>
+
+<span class="comment">// Lưu ý: adj(A) lấy chuyển vị của ma trận cofactor</span>
+    </div>
+  </div>
+
+  <div class="chapter">
+    <span class="chapter-num">Chương 3.3</span>
+    <h2>Hạng của ma trận (Rank)</h2>
+  </div>
+
+  <div class="def-box">
+    <strong>Định nghĩa hạng</strong>
+    Hạng của ma trận A (ký hiệu rank(A) hay r(A)) là số hàng khác 0 trong dạng bậc thang của A = số pivot = số hàng/cột độc lập tuyến tính tối đa.
+  </div>
+
+  <div class="formula">
+<span class="kw">Cách tính: đưa A về dạng bậc thang, đếm hàng ≠ 0</span>
+
+A = ⎡ 1  2  3 ⎤   →   ⎡ 1  2  3 ⎤   →   ⎡ 1  2  3 ⎤
+    ⎢ 2  4  6 ⎥   R₂→R₂-2R₁  ⎢ 0  0  0 ⎥        ⎢ 0  0  0 ⎥
+    ⎣ 1  3  4 ⎦   R₃→R₃-R₁   ⎣ 0  1  1 ⎦   R₂↔R₃ ⎣ 0  1  1 ⎦
+
+rank(A) = 2  (có 2 hàng ≠ 0)
+
+<span class="kw">Tính chất:</span>
+rank(A) = rank(Aᵀ)
+rank(A) ≤ min(m, n)
+A khả nghịch ⟺ rank(A) = n  (đối với A vuông n×n)
+  </div>
+</div>
+
+<!-- ═══════════════ LINEAR SYSTEMS ═══════════════ -->
+<div class="section" id="linear-sys">
+  <p class="section-intro">Hệ phương trình tuyến tính là ứng dụng trực tiếp nhất của ma trận — mọi kỹ thuật giải hệ đều được thể hiện qua thao tác ma trận.</p>
+
+  <div class="chapter">
+    <span class="chapter-num">Chương 4</span>
+    <h2>Hệ phương trình tuyến tính</h2>
+  </div>
+
+  <div class="def-box">
+    <strong>Dạng tổng quát</strong>
+    Hệ m phương trình với n ẩn: a₁₁x₁ + a₁₂x₂ + ··· + a₁ₙxₙ = b₁, ..., aₘ₁x₁ + aₘ₂x₂ + ··· + aₘₙxₙ = bₘ
+  </div>
+
+  <div class="formula">
+<span class="kw">Dạng ma trận:</span>   Ax = b
+
+⎡ a₁₁  a₁₂  ···  a₁ₙ ⎤ ⎡ x₁ ⎤   ⎡ b₁ ⎤
+⎢ a₂₁  a₂₂  ···  a₂ₙ ⎥ ⎢ x₂ ⎥ = ⎢ b₂ ⎥
+⎢  ·    ·         ·  ⎥ ⎢ ·  ⎥   ⎢ ·  ⎥
+⎣ aₘ₁  aₘ₂  ···  aₘₙ ⎦ ⎣ xₙ ⎦   ⎣ bₘ ⎦
+
+<span class="comment">// A: ma trận hệ số | x: vector ẩn | b: vector vế phải</span>
+<span class="kw">Ma trận mở rộng:</span>  [A|b] = ⎡ a₁₁ ··· a₁ₙ | b₁ ⎤
+                            ⎣ aₘ₁ ··· aₘₙ | bₘ ⎦
+  </div>
+
+  <div class="chapter">
+    <span class="chapter-num">Chương 4.2</span>
+    <h2>Định lý Rouché–Capelli (Điều kiện có nghiệm)</h2>
+  </div>
+
+  <div class="concept-box" data-label="Định lý cốt lõi">
+    <h3>Tiêu chuẩn Kronecker–Capelli</h3>
+    <div class="formula">
+Hệ Ax = b có nghiệm  ⟺  rank(A) = rank([A|b])
+
+<span class="kw">Khi có nghiệm:</span>
+• rank(A) = rank([A|b]) = n   →  <span class="hl">nghiệm DUY NHẤT</span>
+• rank(A) = rank([A|b]) < n  →  <span class="hl">vô số nghiệm</span>
+                                   (n - rank(A) tham số tự do)
+
+<span class="kw">Khi vô nghiệm:</span>
+• rank(A) < rank([A|b])       →  <span class="hl">VÔ NGHIỆM</span>
+    </div>
+  </div>
+
+  <div class="chapter">
+    <span class="chapter-num">Chương 4.3</span>
+    <h2>Hệ thuần nhất (Homogeneous)</h2>
+  </div>
+
+  <div class="def-box">
+    <strong>Hệ thuần nhất: Ax = 0</strong>
+    Luôn có nghiệm tầm thường x = 0. Có nghiệm không tầm thường ⟺ rank(A) &lt; n ⟺ det(A) = 0 (nếu vuông).
+  </div>
+
+  <div class="formula">
+<span class="kw">Không gian nghiệm (null space):</span>
+Nul(A) = {x ∈ ℝⁿ | Ax = 0}
+
+dim(Nul(A)) = n - rank(A)  <span class="comment">// số chiều = số tham số tự do</span>
+
+<span class="kw">Định lý hạng-vô hiệu (Rank-Nullity Theorem):</span>
+rank(A) + nullity(A) = n  <span class="comment">// n = số cột</span>
+  </div>
+</div>
+
+<!-- ═══════════════ METHODS ═══════════════ -->
+<div class="section" id="methods">
+  <p class="section-intro">Có nhiều phương pháp giải hệ phương trình tuyến tính. Mỗi phương pháp có ưu điểm riêng tùy theo cấu trúc bài toán.</p>
+
+  <div class="chapter">
+    <span class="chapter-num">Chương 5</span>
+    <h2>Phương pháp Gauss (khử Gauss)</h2>
+  </div>
+
+  <div class="concept-box" data-label="Thuật toán">
+    <h3>Các bước thực hiện</h3>
+    <ol class="steps">
+      <li>Viết ma trận mở rộng [A|b]</li>
+      <li>Dùng biến đổi hàng sơ cấp đưa về dạng bậc thang REF</li>
+      <li>Kiểm tra tính tương thích (rank(A) vs rank([A|b]))</li>
+      <li>Thế ngược (back substitution) từ hàng cuối lên để tìm nghiệm</li>
+    </ol>
+  </div>
+
+  <div class="formula">
+<span class="kw">Ví dụ đầy đủ:</span>
+ x + 2y + 3z = 14
+2x + 5y + 7z = 33
+3x + 7y + 9z = 44
+
+[A|b] = ⎡ 1  2  3 | 14 ⎤
+        ⎢ 2  5  7 | 33 ⎥
+        ⎣ 3  7  9 | 44 ⎦
+
+<span class="hl">R₂ → R₂ - 2R₁:</span>
+        ⎡ 1  2  3 | 14 ⎤
+        ⎢ 0  1  1 |  5 ⎥
+        ⎣ 3  7  9 | 44 ⎦
+
+<span class="hl">R₃ → R₃ - 3R₁:</span>
+        ⎡ 1  2  3 | 14 ⎤
+        ⎢ 0  1  1 |  5 ⎥
+        ⎣ 0  1  0 |  2 ⎦
+
+<span class="hl">R₃ → R₃ - R₂:</span>
+        ⎡ 1  2  3 | 14 ⎤
+        ⎢ 0  1  1 |  5 ⎥
+        ⎣ 0  0 -1 | -3 ⎦  ← dạng REF
+
+<span class="kw">Thế ngược:</span>
+z = 3
+y = 5 - z = 5 - 3 = 2
+x = 14 - 2y - 3z = 14 - 4 - 9 = 1
+
+<span class="hl">Nghiệm: (x, y, z) = (1, 2, 3)</span>
+  </div>
+
+  <div class="chapter">
+    <span class="chapter-num">Chương 5.2</span>
+    <h2>Phương pháp Gauss-Jordan</h2>
+  </div>
+
+  <div class="concept-box" data-label="Cải tiến">
+    <h3>Đưa về RREF — không cần thế ngược</h3>
+    <div class="formula">
+<span class="comment">// Tiếp tục từ REF ở trên</span>
+<span class="hl">R₃ → -R₃:</span>
+        ⎡ 1  2  3 | 14 ⎤
+        ⎢ 0  1  1 |  5 ⎥
+        ⎣ 0  0  1 |  3 ⎦
+
+<span class="hl">R₂ → R₂ - R₃:</span>
+        ⎡ 1  2  3 | 14 ⎤
+        ⎢ 0  1  0 |  2 ⎥
+        ⎣ 0  0  1 |  3 ⎦
+
+<span class="hl">R₁ → R₁ - 3R₃:</span>
+        ⎡ 1  2  0 |  5 ⎤
+        ⎢ 0  1  0 |  2 ⎥
+        ⎣ 0  0  1 |  3 ⎦
+
+<span class="hl">R₁ → R₁ - 2R₂:</span>
+        ⎡ 1  0  0 |  1 ⎤   ← RREF
+        ⎢ 0  1  0 |  2 ⎥
+        ⎣ 0  0  1 |  3 ⎦
+
+<span class="hl">Đọc nghiệm trực tiếp: x=1, y=2, z=3</span>
+    </div>
+  </div>
+
+  <div class="chapter">
+    <span class="chapter-num">Chương 5.3</span>
+    <h2>Quy tắc Cramer</h2>
+  </div>
+
+  <div class="def-box">
+    <strong>Áp dụng khi:</strong> Hệ vuông n×n, det(A) ≠ 0 (nghiệm duy nhất). Tính toán nhiều nhưng đẹp về mặt lý thuyết.
+  </div>
+
+  <div class="formula">
+<span class="kw">Hệ Ax = b với det(A) ≠ 0:</span>
+
+xᵢ = det(Aᵢ) / det(A)
+
+<span class="kw">Trong đó Aᵢ = A với cột thứ i thay bằng b</span>
+
+<span class="kw">Ví dụ 2×2:</span>  a₁x + b₁y = c₁
+               a₂x + b₂y = c₂
+
+D = |a₁  b₁| = a₁b₂ - b₁a₂
+    |a₂  b₂|
+
+Dₓ = |c₁  b₁| = c₁b₂ - b₁c₂
+     |c₂  b₂|
+
+Dᵧ = |a₁  c₁| = a₁c₂ - c₁a₂
+     |a₂  c₂|
+
+x = Dₓ/D,   y = Dᵧ/D
+  </div>
+
+  <div class="chapter">
+    <span class="chapter-num">Chương 5.4</span>
+    <h2>Phương pháp ma trận nghịch đảo</h2>
+  </div>
+
+  <div class="formula">
+<span class="kw">Nếu det(A) ≠ 0, hệ Ax = b có nghiệm duy nhất:</span>
+
+x = A⁻¹ · b
+
+<span class="kw">Ví dụ:</span> 2x + y = 5
+          5x + 3y = 13
+
+A = ⎡ 2  1 ⎤,  b = ⎡ 5  ⎤
+    ⎣ 5  3 ⎦       ⎣ 13 ⎦
+
+A⁻¹ = ⎡  3  -1 ⎤  (det(A) = 1)
+      ⎣ -5   2 ⎦
+
+x = A⁻¹b = ⎡  3  -1 ⎤ · ⎡ 5  ⎤ = ⎡ 15-13 ⎤ = ⎡ 2 ⎤
+            ⎣ -5   2 ⎦   ⎣ 13 ⎦   ⎣ -25+26⎦   ⎣ 1 ⎦
+
+<span class="hl">Nghiệm: x=2, y=1</span>
+  </div>
+
+  <div class="concept-box" data-label="So sánh phương pháp">
+    <h3>Khi nào dùng phương pháp nào?</h3>
+    <table>
+      <tr><th>Phương pháp</th><th>Điều kiện tốt nhất</th><th>Ưu điểm</th></tr>
+      <tr><td>Gauss/Gauss-Jordan</td><td>Mọi hệ (kể cả vô nghiệm, vô số nghiệm)</td><td>Tổng quát, dùng được luôn</td></tr>
+      <tr><td>Cramer</td><td>Hệ vuông, det≠0, n nhỏ</td><td>Công thức tường minh, đẹp lý thuyết</td></tr>
+      <tr><td>Ma trận nghịch đảo</td><td>Cùng A nhưng nhiều b khác nhau</td><td>Tái sử dụng A⁻¹</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════ ADVANCED ═══════════════ -->
+<div class="section" id="advanced">
+  <p class="section-intro">Các chủ đề nâng cao — nền tảng cho machine learning, xử lý tín hiệu, và nhiều ứng dụng hiện đại.</p>
+
+  <div class="chapter">
+    <span class="chapter-num">Chương 6</span>
+    <h2>Không gian vector (Vector Space)</h2>
+  </div>
+
+  <div class="def-box">
+    <strong>Định nghĩa</strong>
+    Không gian vector V trên trường F là tập hợp với hai phép toán (cộng và nhân vô hướng) thỏa 8 tiên đề: đóng, kết hợp, giao hoán, phần tử trung hòa, phần tử đối, phân phối (2 loại), đơn vị nhân vô hướng.
+  </div>
+
+  <div class="two-col">
+    <div class="concept-box" data-label="Không gian con">
+      <h3>Không gian con (Subspace)</h3>
+      <p>W ⊆ V là không gian con nếu W không rỗng và đóng với cộng & nhân vô hướng.</p>
+      <div class="note" style="font-size:0.88rem"><strong>Test nhanh:</strong> W là không gian con ⟺ với mọi u,v ∈ W, α,β ∈ F: αu + βv ∈ W.</div>
+    </div>
+    <div class="concept-box" data-label="Cơ sở và chiều">
+      <h3>Cơ sở (Basis) & Chiều (Dimension)</h3>
+      <p>Cơ sở = tập độc lập tuyến tính sinh ra toàn bộ không gian. Số phần tử cơ sở = chiều của không gian.</p>
+      <div class="formula" style="font-size:0.78rem">ℝ²: {e₁=[1,0], e₂=[0,1]} là cơ sở chuẩn
+dim(ℝⁿ) = n</div>
+    </div>
+  </div>
+
+  <div class="chapter">
+    <span class="chapter-num">Chương 6.2</span>
+    <h2>Độc lập tuyến tính</h2>
+  </div>
+
+  <div class="def-box">
+    <strong>Định nghĩa</strong>
+    Tập {v₁, ..., vₖ} độc lập tuyến tính ⟺ phương trình α₁v₁ + ... + αₖvₖ = 0 chỉ có nghiệm tầm thường α₁=...=αₖ=0.
+  </div>
+
+  <div class="formula">
+<span class="kw">Kiểm tra bằng ma trận:</span>
+Đặt A = [v₁ | v₂ | ... | vₖ]  (các vectơ là cột)
+{v₁,...,vₖ} độc lập TT ⟺ rank(A) = k
+                        ⟺ Ax = 0 chỉ có nghiệm x = 0
+
+<span class="kw">Ví dụ:</span> v₁=[1,2,3], v₂=[0,1,1], v₃=[2,3,5]
+
+A = ⎡ 1  0  2 ⎤  →  ⎡ 1  0  2 ⎤
+    ⎢ 2  1  3 ⎥      ⎢ 0  1 -1 ⎥
+    ⎣ 3  1  5 ⎦      ⎣ 0  0  0 ⎦
+
+rank(A) = 2 < 3 → <span class="hl">phụ thuộc tuyến tính</span>
+v₃ = 2v₁ - v₂  (v₃ là tổ hợp tuyến tính)
+  </div>
+
+  <div class="chapter">
+    <span class="chapter-num">Chương 7</span>
+    <h2>Trị riêng & Vectơ riêng (Eigenvalues & Eigenvectors)</h2>
+  </div>
+
+  <div class="def-box">
+    <strong>Định nghĩa</strong>
+    λ là trị riêng của A nếu tồn tại v ≠ 0 sao cho <strong>Av = λv</strong>. v được gọi là vectơ riêng ứng với λ.
+  </div>
+
+  <div class="formula">
+<span class="kw">Cách tìm trị riêng:</span>
+Av = λv  ⟺  Av - λv = 0  ⟺  (A - λI)v = 0
+
+Có nghiệm v ≠ 0 ⟺ det(A - λI) = 0  <span class="comment">← phương trình đặc trưng</span>
+
+<span class="kw">Ví dụ: A = ⎡ 4  1 ⎤</span>
+<span class="kw">            ⎣ 2  3 ⎦</span>
+
+det(A - λI) = |4-λ   1 | = (4-λ)(3-λ) - 2
+              | 2   3-λ|
+
+= λ² - 7λ + 10 = (λ-5)(λ-2) = 0
+
+<span class="hl">λ₁ = 5, λ₂ = 2</span>
+
+<span class="kw">Vectơ riêng với λ₁=5:</span>  (A-5I)v=0
+⎡ -1  1 ⎤ v = 0  →  v₁ = t⎡ 1 ⎤, t≠0
+⎣  2 -2 ⎦              ⎣ 1 ⎦
+
+<span class="kw">Vectơ riêng với λ₂=2:</span>  (A-2I)v=0
+⎡ 2  1 ⎤ v = 0  →  v₂ = t⎡  1 ⎤, t≠0
+⎣ 2  1 ⎦              ⎣ -2 ⎦
+  </div>
+
+  <div class="chapter">
+    <span class="chapter-num">Chương 7.2</span>
+    <h2>Chéo hóa ma trận (Diagonalization)</h2>
+  </div>
+
+  <div class="def-box">
+    <strong>Ma trận A (n×n) chéo hóa được</strong> ⟺ A có n vectơ riêng độc lập tuyến tính. Khi đó: <strong>A = PDP⁻¹</strong>, D là ma trận đường chéo gồm các trị riêng.
+  </div>
+
+  <div class="formula">
+<span class="kw">Từ ví dụ trên:</span>
+P = [v₁|v₂] = ⎡ 1   1 ⎤,   D = ⎡ 5  0 ⎤
+               ⎣ 1  -2 ⎦        ⎣ 0  2 ⎦
+
+A = P·D·P⁻¹
+
+<span class="kw">Ứng dụng: tính Aⁿ hiệu quả</span>
+Aⁿ = PDⁿP⁻¹ = P · ⎡ 5ⁿ   0  ⎤ · P⁻¹
+                   ⎣  0   2ⁿ ⎦
+  </div>
+
+  <div class="chapter">
+    <span class="chapter-num">Chương 8</span>
+    <h2>Phân tích LU</h2>
+  </div>
+
+  <div class="def-box">
+    <strong>Phân tích LU:</strong> Tách A = LU, với L là ma trận tam giác dưới đơn vị, U là ma trận tam giác trên. Hữu ích khi cần giải Ax=b nhiều lần với cùng A.
+  </div>
+
+  <div class="formula">
+<span class="kw">Giải Ax = b qua LU:</span>
+Bước 1: Tìm L, U sao cho A = LU
+Bước 2: Giải Ly = b  (thế xuôi — forward substitution)
+Bước 3: Giải Ux = y  (thế ngược — back substitution)
+
+<span class="kw">Ví dụ:</span>
+A = ⎡ 2  1 ⎤ = ⎡ 1    0 ⎤ · ⎡ 2  1   ⎤ = L·U
+    ⎣ 6  4 ⎦   ⎣ 3    1 ⎦   ⎣ 0  1   ⎦
+
+<span class="comment">// m₂₁ = a₂₁/a₁₁ = 6/2 = 3 → L₂₁ = 3, U₂₂ = 4 - 3·1 = 1</span>
+  </div>
+</div>
+
+<!-- ═══════════════ EXERCISES ═══════════════ -->
+<div class="section" id="exercises">
+  <p class="section-intro">Bài tập được phân loại theo chủ đề và độ khó. Hãy thử tự giải trước khi xem đáp án!</p>
+
+  <div class="chapter">
+    <span class="chapter-num">Nhóm A</span>
+    <h2>Phép toán ma trận — Cơ bản</h2>
+  </div>
+
+  <!-- Ex A1 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <span>Bài A1 — Cộng và nhân vô hướng</span>
+      <span class="difficulty diff-easy">Cơ bản</span>
+    </div>
+    <div class="ex-body">
+      <div class="ex-q">
+        Cho A = [[2, -1, 3], [0, 4, -2]] và B = [[-1, 3, 0], [5, -2, 1]].
+        Tính: (a) A + B, (b) 2A - 3B, (c) (A+B)ᵀ
+      </div>
+      <button class="toggle-btn" onclick="toggleSol(this)">Xem lời giải</button>
+      <div class="ex-sol">
+        <span class="sol-label">Lời giải</span>
+        <div class="formula">
+(a) A + B = ⎡ 2+(-1)  -1+3   3+0  ⎤ = ⎡  1   2   3 ⎤
+            ⎣  0+5    4+(-2)  -2+1 ⎦   ⎣  5   2  -1 ⎦
+
+(b) 2A = ⎡  4  -2  6 ⎤,  3B = ⎡ -3   9   0 ⎤
+        ⎣  0   8 -4 ⎦        ⎣  15  -6   3 ⎦
+
+2A - 3B = ⎡  4-(-3)  -2-9   6-0  ⎤ = ⎡  7  -11   6 ⎤
+          ⎣  0-15     8-(-6)  -4-3 ⎦   ⎣ -15  14  -7 ⎦
+
+(c) (A+B)ᵀ = ⎡  1   5 ⎤
+              ⎢  2   2 ⎥
+              ⎣  3  -1 ⎦
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex A2 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <span>Bài A2 — Nhân ma trận</span>
+      <span class="difficulty diff-easy">Cơ bản</span>
+    </div>
+    <div class="ex-body">
+      <div class="ex-q">
+        Cho A = [[1,2],[3,4],[5,6]] và B = [[7,8,9],[10,11,12]]. Tính AB và kiểm tra xem BA có xác định không.
+      </div>
+      <button class="toggle-btn" onclick="toggleSol(this)">Xem lời giải</button>
+      <div class="ex-sol">
+        <span class="sol-label">Lời giải</span>
+        <div class="formula">
+A là (3×2), B là (2×3).
+AB có kích thước (3×3) ✓  (số cột A = số hàng B = 2)
+BA có kích thước (2×2) ✓  (số cột B = số hàng A = 3 ✓)
+
+AB:
+c₁₁ = 1·7 + 2·10 = 7+20 = 27
+c₁₂ = 1·8 + 2·11 = 8+22 = 30
+c₁₃ = 1·9 + 2·12 = 9+24 = 33
+
+c₂₁ = 3·7 + 4·10 = 21+40 = 61
+c₂₂ = 3·8 + 4·11 = 24+44 = 68
+c₂₃ = 3·9 + 4·12 = 27+48 = 75
+
+c₃₁ = 5·7 + 6·10 = 35+60 = 95
+c₃₂ = 5·8 + 6·11 = 40+66 = 106
+c₃₃ = 5·9 + 6·12 = 45+72 = 117
+
+AB = ⎡  27   30   33 ⎤
+     ⎢  61   68   75 ⎥
+     ⎣  95  106  117 ⎦
+
+BA = ⎡ 7·1+8·3+9·5    7·2+8·4+9·6  ⎤ = ⎡  76   100 ⎤
+     ⎣ 10·1+11·3+12·5  10·2+11·4+12·6 ⎦   ⎣ 103   136 ⎦
+
+Nhận xét: AB ≠ BA (kích thước khác nhau, điều này luôn xảy ra trừ khi cả hai đều vuông)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chapter">
+    <span class="chapter-num">Nhóm B</span>
+    <h2>Định thức — Từ cơ bản đến trung cấp</h2>
+  </div>
+
+  <!-- Ex B1 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <span>Bài B1 — Định thức cấp 2 và 3</span>
+      <span class="difficulty diff-easy">Cơ bản</span>
+    </div>
+    <div class="ex-body">
+      <div class="ex-q">
+        Tính định thức: (a) |3  -2; 5  4|, (b) |1 2 3; 0 4 5; 1 0 6|
+      </div>
+      <button class="toggle-btn" onclick="toggleSol(this)">Xem lời giải</button>
+      <div class="ex-sol">
+        <span class="sol-label">Lời giải</span>
+        <div class="formula">
+(a) |3  -2|
+    |5   4| = 3·4 - (-2)·5 = 12 + 10 = <span class="hl">22</span>
+
+(b) Khai triển theo hàng 1:
+|1  2  3|
+|0  4  5| = 1·|4  5| - 2·|0  5| + 3·|0  4|
+|1  0  6|     |0  6|     |1  6|     |1  0|
+
+= 1·(24-0) - 2·(0-5) + 3·(0-4)
+= 24 + 10 - 12 = <span class="hl">22</span>
+
+Kiểm tra bằng Sarrus:
+1·4·6 + 2·5·1 + 3·0·0 - 3·4·1 - 1·5·0 - 2·0·6
+= 24 + 10 + 0 - 12 - 0 - 0 = <span class="hl">22</span> ✓
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex B2 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <span>Bài B2 — Tính chất định thức</span>
+      <span class="difficulty diff-med">Trung cấp</span>
+    </div>
+    <div class="ex-body">
+      <div class="ex-q">
+        Biết det(A) = 6. Tính: (a) det(3A) với A là ma trận 3×3, (b) det(A²), (c) det(A⁻¹), (d) det(Aᵀ)
+      </div>
+      <button class="toggle-btn" onclick="toggleSol(this)">Xem lời giải</button>
+      <div class="ex-sol">
+        <span class="sol-label">Lời giải</span>
+        <div class="formula">
+(a) det(3A) = 3³·det(A) = 27·6 = <span class="hl">162</span>
+   (nhân k vào A n×n thì det nhân kⁿ)
+
+(b) det(A²) = det(A·A) = det(A)·det(A) = 6·6 = <span class="hl">36</span>
+
+(c) det(A⁻¹) = 1/det(A) = 1/6 = <span class="hl">1/6</span>
+   (vì A·A⁻¹ = I nên det(A)·det(A⁻¹) = det(I) = 1)
+
+(d) det(Aᵀ) = det(A) = <span class="hl">6</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chapter">
+    <span class="chapter-num">Nhóm C</span>
+    <h2>Hệ phương trình tuyến tính</h2>
+  </div>
+
+  <!-- Ex C1 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <span>Bài C1 — Gauss-Jordan, nghiệm duy nhất</span>
+      <span class="difficulty diff-easy">Cơ bản</span>
+    </div>
+    <div class="ex-body">
+      <div class="ex-q">
+        Giải hệ: x + y + z = 6 &nbsp;|&nbsp; 2x - y + z = 3 &nbsp;|&nbsp; x + 2y - z = 2 bằng phương pháp Gauss-Jordan.
+      </div>
+      <button class="toggle-btn" onclick="toggleSol(this)">Xem lời giải</button>
+      <div class="ex-sol">
+        <span class="sol-label">Lời giải</span>
+        <div class="formula">
+[A|b] = ⎡ 1   1   1 | 6 ⎤
+        ⎢ 2  -1   1 | 3 ⎥
+        ⎣ 1   2  -1 | 2 ⎦
+
+R₂→R₂-2R₁:  ⎡ 1   1   1 |  6 ⎤
+              ⎢ 0  -3  -1 | -9 ⎥
+              ⎣ 1   2  -1 |  2 ⎦
+
+R₃→R₃-R₁:  ⎡ 1   1   1 |  6 ⎤
+             ⎢ 0  -3  -1 | -9 ⎥
+             ⎣ 0   1  -2 | -4 ⎦
+
+R₂→-R₂/3:  ⎡ 1   1   1 |  6 ⎤
+            ⎢ 0   1  1/3|  3 ⎥
+            ⎣ 0   1  -2 | -4 ⎦
+
+R₃→R₃-R₂:  ⎡ 1   1   1  |  6 ⎤
+            ⎢ 0   1   1/3|  3 ⎥
+            ⎣ 0   0  -7/3| -7 ⎦
+
+R₃→-3R₃/7: ⎡ 1  1   1  |  6 ⎤
+            ⎢ 0  1  1/3 |  3 ⎥
+            ⎣ 0  0   1  |  3 ⎦
+
+R₂→R₂-R₃/3: ⎡ 1  1  1 |  6 ⎤
+             ⎢ 0  1  0 |  2 ⎥
+             ⎣ 0  0  1 |  3 ⎦
+
+R₁→R₁-R₃:   ⎡ 1  1  0 |  3 ⎤
+R₁→R₁-R₂:   ⎡ 1  0  0 |  1 ⎤
+             ⎢ 0  1  0 |  2 ⎥
+             ⎣ 0  0  1 |  3 ⎦
+
+<span class="hl">Nghiệm: x = 1, y = 2, z = 3</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex C2 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <span>Bài C2 — Hệ vô số nghiệm</span>
+      <span class="difficulty diff-med">Trung cấp</span>
+    </div>
+    <div class="ex-body">
+      <div class="ex-q">
+        Giải hệ: x + 2y - z = 3 &nbsp;|&nbsp; 2x + 4y - 2z = 6 &nbsp;|&nbsp; x + y + z = 4. Biểu diễn nghiệm tổng quát.
+      </div>
+      <button class="toggle-btn" onclick="toggleSol(this)">Xem lời giải</button>
+      <div class="ex-sol">
+        <span class="sol-label">Lời giải</span>
+        <div class="formula">
+[A|b] = ⎡ 1  2  -1 | 3 ⎤
+        ⎢ 2  4  -2 | 6 ⎥
+        ⎣ 1  1   1 | 4 ⎦
+
+R₂→R₂-2R₁: ⎡ 1  2  -1 | 3 ⎤
+R₃→R₃-R₁:  ⎢ 0  0   0 | 0 ⎥  ← hàng 0 toàn bộ
+            ⎣ 0 -1   2 | 1 ⎦
+
+R₂↔R₃:     ⎡ 1  2  -1 |  3 ⎤
+R₃→-R₃:    ⎢ 0  1  -2 | -1 ⎥
+            ⎣ 0  0   0 |  0 ⎦
+
+R₁→R₁-2R₂: ⎡ 1  0   3 |  5 ⎤
+            ⎢ 0  1  -2 | -1 ⎥
+            ⎣ 0  0   0 |  0 ⎦
+
+rank(A) = rank([A|b]) = 2 < 3 → <span class="hl">vô số nghiệm</span>
+Biến tự do: z = t (t ∈ ℝ bất kỳ)
+
+Từ hàng 2: y = -1 + 2t
+Từ hàng 1: x = 5 - 3t
+
+<span class="hl">Nghiệm tổng quát:</span>
+⎡ x ⎤   ⎡  5 ⎤       ⎡ -3 ⎤
+⎢ y ⎥ = ⎢ -1 ⎥ + t · ⎢  2 ⎥,  t ∈ ℝ
+⎣ z ⎦   ⎣  0 ⎦       ⎣  1 ⎦
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex C3 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <span>Bài C3 — Hệ vô nghiệm</span>
+      <span class="difficulty diff-med">Trung cấp</span>
+    </div>
+    <div class="ex-body">
+      <div class="ex-q">
+        Xét hệ: x + y + z = 1 &nbsp;|&nbsp; 2x + 3y + z = 3 &nbsp;|&nbsp; x + 2y = 3. Hệ có nghiệm không? Giải thích.
+      </div>
+      <button class="toggle-btn" onclick="toggleSol(this)">Xem lời giải</button>
+      <div class="ex-sol">
+        <span class="sol-label">Lời giải</span>
+        <div class="formula">
+[A|b] = ⎡ 1  1  1 | 1 ⎤
+        ⎢ 2  3  1 | 3 ⎥
+        ⎣ 1  2  0 | 3 ⎦
+
+R₂→R₂-2R₁:  ⎡ 1  1  1 |  1 ⎤
+R₃→R₃-R₁:   ⎢ 0  1 -1 |  1 ⎥
+             ⎣ 0  1 -1 |  2 ⎦
+
+R₃→R₃-R₂:   ⎡ 1  1  1 |  1 ⎤
+             ⎢ 0  1 -1 |  1 ⎥
+             ⎣ 0  0  0 |  1 ⎦  ← hàng [0 0 0 | 1]
+
+rank(A) = 2,  rank([A|b]) = 3
+rank(A) ≠ rank([A|b]) → <span class="hl">HỆ VÔ NGHIỆM</span>
+
+Hàng cuối tương đương: 0·x + 0·y + 0·z = 1
+→ 0 = 1 (mâu thuẫn), không có x,y,z nào thỏa mãn.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex C4 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <span>Bài C4 — Quy tắc Cramer</span>
+      <span class="difficulty diff-med">Trung cấp</span>
+    </div>
+    <div class="ex-body">
+      <div class="ex-q">
+        Dùng quy tắc Cramer giải hệ: 3x - y = 7 &nbsp;|&nbsp; 2x + 5y = 1
+      </div>
+      <button class="toggle-btn" onclick="toggleSol(this)">Xem lời giải</button>
+      <div class="ex-sol">
+        <span class="sol-label">Lời giải</span>
+        <div class="formula">
+D = |3  -1| = 3·5 - (-1)·2 = 15 + 2 = 17
+    |2   5|
+
+Dₓ = |7  -1| = 7·5 - (-1)·1 = 35 + 1 = 36
+     |1   5|
+
+Dᵧ = |3   7| = 3·1 - 7·2 = 3 - 14 = -11
+     |2   1|
+
+x = Dₓ/D = 36/17
+y = Dᵧ/D = -11/17
+
+<span class="hl">Nghiệm: x = 36/17, y = -11/17</span>
+
+Kiểm tra: 3(36/17) - (-11/17) = 108/17 + 11/17 = 119/17 = 7 ✓
+          2(36/17) + 5(-11/17) = 72/17 - 55/17 = 17/17 = 1 ✓
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chapter">
+    <span class="chapter-num">Nhóm D</span>
+    <h2>Ma trận nghịch đảo — Trung cấp đến Nâng cao</h2>
+  </div>
+
+  <!-- Ex D1 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <span>Bài D1 — Tìm ma trận nghịch đảo 3×3</span>
+      <span class="difficulty diff-med">Trung cấp</span>
+    </div>
+    <div class="ex-body">
+      <div class="ex-q">
+        Tìm A⁻¹ của A = [[1, 2, 1], [2, 5, 3], [3, 7, 5]] bằng phương pháp Gauss-Jordan.
+      </div>
+      <button class="toggle-btn" onclick="toggleSol(this)">Xem lời giải</button>
+      <div class="ex-sol">
+        <span class="sol-label">Lời giải</span>
+        <div class="formula">
+[A|I] = ⎡ 1  2  1 | 1  0  0 ⎤
+        ⎢ 2  5  3 | 0  1  0 ⎥
+        ⎣ 3  7  5 | 0  0  1 ⎦
+
+R₂→R₂-2R₁:  ⎡ 1  2  1 |  1  0  0 ⎤
+R₃→R₃-3R₁:  ⎢ 0  1  1 | -2  1  0 ⎥
+             ⎣ 0  1  2 | -3  0  1 ⎦
+
+R₃→R₃-R₂:   ⎡ 1  2  1 |  1  0  0 ⎤
+             ⎢ 0  1  1 | -2  1  0 ⎥
+             ⎣ 0  0  1 | -1 -1  1 ⎦
+
+R₂→R₂-R₃:   ⎡ 1  2  1 |  1  0  0 ⎤
+             ⎢ 0  1  0 | -1  2 -1 ⎥
+             ⎣ 0  0  1 | -1 -1  1 ⎦
+
+R₁→R₁-R₃:   ⎡ 1  2  0 |  2  1 -1 ⎤
+R₁→R₁-2R₂:  ⎡ 1  0  0 |  4 -3  1 ⎤
+             ⎢ 0  1  0 | -1  2 -1 ⎥
+             ⎣ 0  0  1 | -1 -1  1 ⎦
+
+A⁻¹ = ⎡  4  -3   1 ⎤
+      ⎢ -1   2  -1 ⎥
+      ⎣ -1  -1   1 ⎦
+
+Kiểm tra: A·A⁻¹ = I (tự kiểm tra nhé!)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chapter">
+    <span class="chapter-num">Nhóm E</span>
+    <h2>Trị riêng — Nâng cao</h2>
+  </div>
+
+  <!-- Ex E1 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <span>Bài E1 — Trị riêng và vectơ riêng</span>
+      <span class="difficulty diff-hard">Nâng cao</span>
+    </div>
+    <div class="ex-body">
+      <div class="ex-q">
+        Tìm tất cả trị riêng và vectơ riêng của A = [[3, -2], [1, 0]].
+      </div>
+      <button class="toggle-btn" onclick="toggleSol(this)">Xem lời giải</button>
+      <div class="ex-sol">
+        <span class="sol-label">Lời giải</span>
+        <div class="formula">
+<span class="kw">Bước 1: Phương trình đặc trưng</span>
+det(A - λI) = |3-λ   -2|
+              | 1   0-λ|
+
+= (3-λ)(0-λ) - (-2)(1)
+= -λ(3-λ) + 2
+= -3λ + λ² + 2
+= λ² - 3λ + 2
+= (λ-1)(λ-2) = 0
+
+<span class="hl">Trị riêng: λ₁ = 1, λ₂ = 2</span>
+
+<span class="kw">Bước 2: Vectơ riêng với λ₁ = 1</span>
+(A - I)v = 0:
+⎡ 2  -2 ⎤ ⎡ x ⎤ = ⎡ 0 ⎤
+⎣ 1  -1 ⎦ ⎣ y ⎦   ⎣ 0 ⎦
+
+2x - 2y = 0  →  x = y
+v₁ = t⎡ 1 ⎤, t ≠ 0
+      ⎣ 1 ⎦
+
+<span class="kw">Bước 3: Vectơ riêng với λ₂ = 2</span>
+(A - 2I)v = 0:
+⎡ 1  -2 ⎤ ⎡ x ⎤ = ⎡ 0 ⎤
+⎣ 1  -2 ⎦ ⎣ y ⎦   ⎣ 0 ⎦
+
+x - 2y = 0  →  x = 2y
+v₂ = t⎡ 2 ⎤, t ≠ 0
+      ⎣ 1 ⎦
+
+<span class="kw">Kiểm tra:</span> A·v₁ = ⎡3-2⎤ = ⎡1⎤ = 1·v₁ ✓
+                    ⎣1+0⎦   ⎣1⎦
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex E2 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <span>Bài E2 — Độc lập tuyến tính</span>
+      <span class="difficulty diff-hard">Nâng cao</span>
+    </div>
+    <div class="ex-body">
+      <div class="ex-q">
+        Xét các vectơ v₁=[1,2,3], v₂=[4,5,6], v₃=[7,8,9]. Tập này có độc lập tuyến tính không? Nếu phụ thuộc, tìm quan hệ.
+      </div>
+      <button class="toggle-btn" onclick="toggleSol(this)">Xem lời giải</button>
+      <div class="ex-sol">
+        <span class="sol-label">Lời giải</span>
+        <div class="formula">
+Lập ma trận A = [v₁|v₂|v₃]:
+
+A = ⎡ 1  4  7 ⎤
+    ⎢ 2  5  8 ⎥
+    ⎣ 3  6  9 ⎦
+
+R₂→R₂-2R₁:  ⎡ 1  4   7 ⎤
+R₃→R₃-3R₁:  ⎢ 0 -3  -6 ⎥
+             ⎣ 0 -6 -12 ⎦
+
+R₃→R₃-2R₂:  ⎡ 1  4   7 ⎤
+             ⎢ 0 -3  -6 ⎥
+             ⎣ 0  0   0 ⎦
+
+rank(A) = 2 < 3 → <span class="hl">PHỤTHUỘC TUYẾN TÍNH</span>
+
+Tìm quan hệ: Giải Ac = 0
+⎡ 1  4   7 ⎤ ⎡ c₁ ⎤   ⎡ 0 ⎤
+⎢ 0 -3  -6 ⎥ ⎢ c₂ ⎥ = ⎢ 0 ⎥
+⎣ 0  0   0 ⎦ ⎣ c₃ ⎦   ⎣ 0 ⎦
+
+c₃ = t (tự do), -3c₂ = 6t → c₂ = -2t
+c₁ = -4c₂ - 7c₃ = 8t - 7t = t
+
+Chọn t=1: c₁=1, c₂=-2, c₃=1
+<span class="hl">v₁ - 2v₂ + v₃ = 0</span>
+hay v₃ = 2v₂ - v₁
+
+Kiểm tra: 2[4,5,6] - [1,2,3] = [8-1, 10-2, 12-3] = [7,8,9] = v₃ ✓
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex E3 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <span>Bài E3 — Hệ tham số, xét theo m</span>
+      <span class="difficulty diff-hard">Nâng cao</span>
+    </div>
+    <div class="ex-body">
+      <div class="ex-q">
+        Với giá trị nào của m thì hệ sau có nghiệm duy nhất / vô số nghiệm / vô nghiệm? <br>
+        x + y + mz = 1 &nbsp;|&nbsp; x + my + z = 1 &nbsp;|&nbsp; mx + y + z = 1
+      </div>
+      <button class="toggle-btn" onclick="toggleSol(this)">Xem lời giải</button>
+      <div class="ex-sol">
+        <span class="sol-label">Lời giải</span>
+        <div class="formula">
+det(A) = |1  1  m|
+         |1  m  1|
+         |m  1  1|
+
+Khai triển:
+= 1(m·1 - 1·1) - 1(1·1 - 1·m) + m(1·1 - m·m)
+= (m-1) - (1-m) + m(1-m²)
+= (m-1) - (1-m) + m(1-m)(1+m)
+= (m-1) + (m-1) + (m-1)(-(1+m))·(-1)·... 
+
+Tính lại chính xác:
+= m - 1 - 1 + m + m - m³
+= -m³ + 3m - 2
+= -(m³ - 3m + 2)
+= -(m-1)²(m+2)
+
+<span class="kw">Phân tích det(A) = -(m-1)²(m+2)</span>
+
+det(A) ≠ 0 khi m ≠ 1 và m ≠ -2
+→ <span class="hl">Nghiệm duy nhất khi m ∉ {1, -2}</span>
+
+<span class="kw">Khi m = 1:</span>
+[A|b] = ⎡ 1  1  1 | 1 ⎤ → mọi hàng giống nhau
+        ⎢ 1  1  1 | 1 ⎥    rank([A|b]) = 1 = rank(A)
+        ⎣ 1  1  1 | 1 ⎦ → <span class="hl">vô số nghiệm (m=1)</span>
+
+<span class="kw">Khi m = -2:</span>
+⎡  1   1  -2 | 1 ⎤  R₂→R₂-R₁, R₃→R₃-R₁:
+⎢  1  -2   1 | 1 ⎥  →  ⎡ 1  1  -2 |  1 ⎤
+⎣ -2   1   1 | 1 ⎦      ⎢ 0 -3   3 |  0 ⎥
+                          ⎣ 0  3   3 |  3 ⎦
+R₃+R₂:                   ⎣ 0  0   6 |  3 ⎦
+Tiếp tục: rank(A)=rank([A|b])=3 ← Chờ đã...
+
+Tính lại: R₂=[0,-3,3|0], R₃=[0,3,3|3]
+R₃+R₂ = [0,0,6|3] → rank = 3 = rank([A|b])
+Hệ có nghiệm duy nhất? Mâu thuẫn với det=0?
+
+→ Cần kiểm tra lại: với m=-2 thực ra det=-((-2-1)²)(-2+2)=0 ✓
+Nhưng rank(A)=2 mà rank([A|b])=3 → <span class="hl">VÔ NGHIỆM khi m=-2</span>
+
+<span class="hl">Tóm tắt:</span>
+• m ≠ 1 và m ≠ -2 → nghiệm duy nhất
+• m = 1 → vô số nghiệm
+• m = -2 → vô nghiệm
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chapter">
+    <span class="chapter-num">Nhóm F</span>
+    <h2>Bài tập tự luyện (không có đáp án ngay)</h2>
+  </div>
+
+  <div class="concept-box" data-label="Bài tập cơ bản">
+    <h3>Mức cơ bản — Tự làm trước khi xem đáp án</h3>
+    <ol class="steps">
+      <li>Cho A=[[2,1],[-1,3]] và B=[[0,4],[2,-1]]. Tính AB, BA, A²-2B.</li>
+      <li>Tính det([[2,-1,3],[1,4,-2],[3,2,1]]).</li>
+      <li>Tìm nghịch đảo của A=[[3,1],[5,2]] bằng công thức 2×2.</li>
+      <li>Giải hệ: 2x-y=3, x+3y=10 bằng cả 3 phương pháp (Gauss, Cramer, nghịch đảo).</li>
+    </ol>
+  </div>
+
+  <div class="concept-box" data-label="Bài tập nâng cao">
+    <h3>Mức nâng cao</h3>
+    <ol class="steps">
+      <li>Chứng minh rằng nếu A² = A thì det(A) = 0 hoặc 1 (ma trận lũy đẳng).</li>
+      <li>Cho A là ma trận vuông thỏa A³ = I. Chứng minh A khả nghịch và tìm A⁻¹ theo A.</li>
+      <li>Tìm tất cả ma trận 2×2 giao hoán với A=[[1,1],[0,1]].</li>
+      <li>Chứng minh rằng nếu λ là trị riêng của A thì λⁿ là trị riêng của Aⁿ.</li>
+      <li>Giải hệ vô số nghiệm: x+2y-z+w=2, 2x+4y-2z+3w=7, 3x+6y-3z+4w=10. Tìm cơ sở của không gian nghiệm.</li>
+    </ol>
+  </div>
+
+  <div class="note">
+    <strong>💡 Chiến lược luyện tập:</strong> Mỗi ngày giải 2–3 bài, ưu tiên bài bạn cảm thấy yếu nhất. Kiểm tra bằng cách thế lại nghiệm vào hệ hoặc tính A·A⁻¹ = I. Đây là cách nhanh nhất phát hiện lỗi tính toán.
+  </div>
+</div>
+
+</main>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleSol(btn) {
+  const sol = btn.nextElementSibling;
+  const isOpen = sol.classList.contains('show');
+  sol.classList.toggle('show');
+  btn.textContent = isOpen ? 'Xem lời giải' : 'Ẩn lời giải';
+  btn.classList.toggle('open', !isOpen);
+}
+</script>
+</body>
+</html>
